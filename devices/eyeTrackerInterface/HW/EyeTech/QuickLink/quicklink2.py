@@ -12,111 +12,83 @@ from ql2types import  *
 
 import inspect
 
-STRING_LENGTH_128 = 128
-QL_SETTING_DEVICE_BANDWIDTH_MODE = "DeviceBandwidthMode"
-QL_SETTING_DEVICE_BANDWIDTH_PERCENT_FULL = "DeviceBandwidthPercentFull"
-QL_SETTING_DEVICE_BANDWIDTH_PERCENT_TRACKING = "DeviceBandwidthPercentTracking"
-QL_SETTING_DEVICE_BINNING = "DeviceBinning"
-QL_SETTING_DEVICE_CALIBRATE_ENABLED = "DeviceCalibrateEnabled"
-QL_SETTING_DEVICE_DISTANCE = "DeviceDistance"
-QL_SETTING_DEVICE_EXPOSURE = "DeviceExposure"
-QL_SETTING_DEVICE_FLIP_X = "DeviceFlipX"
-QL_SETTING_DEVICE_FLIP_Y = "DeviceFlipY"
-QL_SETTING_DEVICE_GAIN_MODE = "DeviceGainMode"
-QL_SETTING_DEVICE_GAIN_VALUE = "DeviceGainValue"
-QL_SETTING_DEVICE_GAZE_POINT_FILTER_MODE = "DeviceGazePointFilterMode"
-QL_SETTING_DEVICE_GAZE_POINT_FILTER_VALUE = "DeviceGazePointFilterValue"
-QL_SETTING_DEVICE_IMAGE_PROCESSING_ENABLED = "DeviceImageProcessingEnabled"
-QL_SETTING_DEVICE_IMAGE_PROCESSING_EYES_TO_FIND = "DeviceImageProcessingEyesToUse"
-QL_SETTING_DEVICE_IMAGE_PROCESSING_EYE_RADIUS_LEFT = "DeviceImageProcessingEyeRadiusLeft"
-QL_SETTING_DEVICE_IMAGE_PROCESSING_EYE_RADIUS_RIGHT = "DeviceImageProcessingEyeRadiusRight"
-QL_SETTING_DEVICE_INTERPOLATE_ENABLED = "DeviceInterpolateEnabled"
-QL_SETTING_DEVICE_IR_LIGHT_MODE = "DeviceIRLightMode"
-QL_SETTING_DEVICE_LENS_FOCAL_LENGTH = "DeviceLensFocalLength"
-QL_SETTING_DEVICE_ROI_MOVE_THRESHOLD_PERCENT_X = "DeviceRoiMoveThresholdPercentX"
-QL_SETTING_DEVICE_ROI_MOVE_THRESHOLD_PERCENT_Y = "DeviceRoiMoveThresholdPercentY"
-QL_SETTING_DEVICE_ROI_SIZE_PERCENT_X = "DeviceRoiSizePercentX"
-QL_SETTING_DEVICE_ROI_SIZE_PERCENT_Y = "DeviceRoiSizePercentY"
-
-# QLRectInt
-#
-# typedef struct
-# {
-# int x;
-# int y;
-# int width;
-# int height;
-# } QLRectInt;
-class pyQLRectInt(Structure):
-    _fields_ = [("x", c_int),
-                ("y", c_int),
-                ("width", c_int),
-                ("height", c_int)]
-
-# QLImageData
-# ( 32 bit version)
-# typedef struct
-# {
-#     unsigned char* PixelData;
-#     int            Width;
-#     int            Height;
-#     double         Timestamp;
-#     int            Gain;
-#     long           FrameNumber;
-#     QLRectInt      ROI;
-#     void*          Reserved[12];
-# } QLImageData;
-
-class pyQLImageData(Structure):
-    _fields_ = [("PixelData", POINTER(c_ubyte)),
-                ("Width", c_int),
-                ("Height", c_int),
-                ("Timestamp", c_long),
-                ("Gain", c_int),
-                ("FrameNumber", c_long),
-                ("ROI", pyQLRectInt),
-                ("Reserved", c_void_p * 12)]
-
-def createFrameTest():
-    i_w=640
-    i_h=480
-    num_pix=i_w*i_h
-
-    # create some dummy image data contents, since I do not have real frame data
-    import numpy
-    pixel_data=numpy.ones(num_pix,dtype=numpy.uint8)
-    pixel_data[:]=128
-    pixel_data=list(pixel_data)
-
-    qlImageData=pyQLImageData()
-    qlImageData.Width=i_w
-    qlImageData.Height=i_h
-    qlImageData.Timestamp=1234567
-    qlImageData.Gain=100
-    qlImageData.FrameNumber=11111
-    qlImageData.ROI.x=160
-    qlImageData.ROI.y=120
-    qlImageData.ROI.width=320
-    qlImageData.ROI.height=240
-    qlImageData.PixelData=(c_ubyte * num_pix)(*pixel_data)
-
-    return qlImageData
-
 if __name__ == "__main__":
     # If this file is ran expicitly, do a test of the functions here.
-    testFrame = createFrameTest()
+    ql2 = CDLL("QuickLink2.dll");
+    # load the dll!
+    print(ql2)
+    # 
+    print(ql2.QLAPI_GetVersion)
+    
+    buff_size = 128
+    str = create_string_buffer(buff_size)    
+    retVal = ql2.QLAPI_GetVersion(c_int(buff_size), str)
+    if(retVal != QL_ERROR_OK):
+        print("not okay!")
+    else:
+        print("QL2 API Version: ", str.value)
+    
+    print(ql2.QLAPI_ExportSettings)
+    print(ql2.QLAPI_ImportSettings)
+    print(ql2.QLDevice_Enumerate)
+    
+    num_devices = POINTER(c_int)
+    num_devices.value = 10
+    elems = (QLDeviceId * num_devices.value)()
+    device_buffer = cast(elems, POINTER(QLDeviceId))
+    retVal = ql2.QLDevice_Enumerate(num_devices, device_buffer)
+    print(num_devices.value)
+    
+    device_id = device_buffer[0]
+        
+    
+    print(ql2.QLDevice_GetInfo)
+    print(ql2.QLDevice_ExportSettings)
+    print(ql2.QLDevice_ImportSettings)
+    print(ql2.QLDevice_IsSettingSupported)
+    print(ql2.QLDevice_SetPassword)
+    print(ql2.QLDevice_Start)
 
-    if(false):
-        # Print out the entire contents of the Pixel data
-        # ioHub.print2err(testFrame.PixelData[0:testFrame.Width*testFrame.Height])
-        print testFrame.PixelData[0:testFrame.Width*testFrame.Height]
-
-    # Print out 50 lines at a time from the frame
-    for i in range(testFrame.Width * testFrame.Height):
-        print testFrame.PixelData[i],
-        if(i%50 == 0 and i != 0):
-            print " "
-            print i/50, ":",
-    print " "
-    print "done"
+    ql2.QLDevice_Start(device_id)
+    
+    print(ql2.QLDevice_Stop)
+    print(ql2.QLDevice_Stop_All)
+    print(ql2.QLDevice_SetIndicator)
+    print(ql2.QLDevice_GetIndicator)
+    print(ql2.QLDevice_GetFrame)
+    print(ql2.QLDevice_ApplyCalibration)
+    print(ql2.QLDevice_CalibrateEyeRadius)
+    print(ql2.QLDeviceGroup_Create)
+    print(ql2.QLDeviceGroup_AddDevice)
+    print(ql2.QLDeviceGroup_RemoveDevice)
+    print(ql2.QLDeviceGroup_Enumerate)
+    print(ql2.QLDeviceGroup_GetFrame)
+    print(ql2.QLSettings_Load)
+    print(ql2.QLSettings_Save)
+    print(ql2.QLSettings_Create)
+    print(ql2.QLSettings_AddSetting)
+    print(ql2.QLSettings_RemoveSetting)
+    print(ql2.QLSettings_SetValue)
+    print(ql2.QLSettings_SetValueInt)
+    print(ql2.QLSettings_SetValueDouble)
+    print(ql2.QLSettings_SetValueString)
+    print(ql2.QLSettings_GetValue)
+    print(ql2.QLSettings_GetValueInt)
+    print(ql2.QLSettings_GetValueDouble)
+    print(ql2.QLSettings_GetValueString)
+    print(ql2.QLCalibration_Load)
+    print(ql2.QLCalibration_Save)
+    print(ql2.QLCalibration_Create)
+    print(ql2.QLCalibration_Initialize)
+    print(ql2.QLCalibration_GetTargets)
+    print(ql2.QLCalibration_Calibrate)
+    print(ql2.QLCalibration_GetScoring)
+    print(ql2.QLCalibration_GetStatus)
+    print(ql2.QLCalibration_Finalize)
+    print(ql2.QLCalibration_Cancel)
+    print(ql2.QLCalibration_AddBias)
+    
+    
+    
+    print("done")
         
