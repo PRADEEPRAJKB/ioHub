@@ -23,3 +23,13 @@ To install python 2.7 with chocolatey, enter this:
 
 Then after it has downloaded, go to: `C:\Python27` and rename `python.exe` to `python27.exe`.
 
+Troubleshooting
+----
+    OSError: [WinError 126] The specified module could not be found
+
+The dll's are not in the working directory folder.  Download the dll's and put them in.
+
+    OSError: [WinError 193] %1 is not a valid Win32 application
+
+The dll bitness does not match the bitness of your python distribution.  Download the right set of dlls to match what you are using with it.
+

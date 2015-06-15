@@ -9,53 +9,97 @@ Distributed under the terms of the GNU General Public License (GPL version 3 or 
 """
 from ctypes import *
 from ql2types import  * 
+import time
 
-import inspect
+#import inspect
 
 if __name__ == "__main__":
-    # If this file is ran expicitly, do a test of the functions here.
-    ql2 = CDLL("QuickLink2.dll");
+    # If this file is ran explicitly, do a test of the functions here.
     # load the dll!
-    print(ql2)
-    # 
-    print(ql2.QLAPI_GetVersion)
-    
+    ql2 = CDLL("QuickLink2.dll")
+    if(ql2 == 0):
+        raise ValueError('DLL not found')
+
+    # QLAPI_GetVersion
     buff_size = 128
-    str = create_string_buffer(buff_size)    
-    retVal = ql2.QLAPI_GetVersion(c_int(buff_size), str)
-    if(retVal != QL_ERROR_OK):
-        print("not okay!")
+    version_str = create_string_buffer(buff_size)    
+    ret_val = ql2.QLAPI_GetVersion(c_int(buff_size), version_str)
+    if(ret_val != QL_ERROR_OK):
+        raise ValueError('API error')
     else:
-        print("QL2 API Version: ", str.value)
+        print("QL2 API Version: ", version_str.value)
     
     print(ql2.QLAPI_ExportSettings)
     print(ql2.QLAPI_ImportSettings)
     print(ql2.QLDevice_Enumerate)
     
-    num_devices = POINTER(c_int)
-    num_devices.value = 10
-    elems = (QLDeviceId * num_devices.value)()
-    device_buffer = cast(elems, POINTER(QLDeviceId))
-    retVal = ql2.QLDevice_Enumerate(num_devices, device_buffer)
-    print(num_devices.value)
+    device_id = 0
     
-    device_id = device_buffer[0]
+    # pass in a buffer of 100 DeviceId's
+    num_devices = c_int(100)
+    num_devices_ptr = pointer(num_devices)
+    # device_buffer = (QLDeviceId * num_devices_ptr.contents.value)()
+    device_buffer = (num_devices.value * QLDeviceId)()
+    device_buffer_ptr = pointer(device_buffer)
+    ret_val = ql2.QLDevice_Enumerate(num_devices_ptr, device_buffer_ptr)
+    if(ret_val != QL_ERROR_OK):
+        print("not okay!")
+    else:
+        print("num of devices found:", num_devices.value)
+        for num in range(0, num_devices.value):
+            print("Device id:",device_buffer[num])
+        device_id = device_buffer[0]
         
+    # we have a handle to a device!
+    if(device_id == 0):
+        raise ValueError('No devices found')
     
-    print(ql2.QLDevice_GetInfo)
+    # QLDevice_GetInfo
+    device_info = (QLDeviceInfo)()
+    device_info_ptr = pointer(device_info)
+    ret_val = ql2.QLDevice_GetInfo(device_id, device_info_ptr)
+    if(ret_val != QL_ERROR_OK):
+        raise ValueError(errorToString(ret_val))
+    else:
+        print(infoToString(device_info))
+    
+    
     print(ql2.QLDevice_ExportSettings)
     print(ql2.QLDevice_ImportSettings)
     print(ql2.QLDevice_IsSettingSupported)
     print(ql2.QLDevice_SetPassword)
-    print(ql2.QLDevice_Start)
-
+    
+    #QLDevice_Start
+    print("starting device")
     ql2.QLDevice_Start(device_id)
     
     print(ql2.QLDevice_Stop)
     print(ql2.QLDevice_Stop_All)
     print(ql2.QLDevice_SetIndicator)
     print(ql2.QLDevice_GetIndicator)
-    print(ql2.QLDevice_GetFrame)
+    
+    
+    frame = (QLFrameData)()
+    frame_ptr = pointer(frame)
+    wait_time = 500
+    
+    # run the eye tracker for 30 seconds
+    duration_seconds = 30
+    stop = time.time() + duration_seconds
+    while time.time() < stop:
+        ret_val = ql2.QLDevice_GetFrame(device_id, wait_time, frame_ptr)
+        if(ret_val != QL_ERROR_OK):
+            raise ValueError(errorToString(ret_val))
+        else:
+            print("got frame!", frame.ImageData.FrameNumber)
+            
+            # Not working after this point.  Need to debug structures            
+            if(frame.LeftEye.Found == c_bool(True)):
+                print("LE",eyeDataToString(frame.LeftEye))
+            if(frame.RightEye.Found == c_bool(True)):
+                print("RE",eyeDataToString(frame.RightEye))
+    
+    
     print(ql2.QLDevice_ApplyCalibration)
     print(ql2.QLDevice_CalibrateEyeRadius)
     print(ql2.QLDeviceGroup_Create)
@@ -91,4 +135,3 @@ if __name__ == "__main__":
     
     
     print("done")
-        

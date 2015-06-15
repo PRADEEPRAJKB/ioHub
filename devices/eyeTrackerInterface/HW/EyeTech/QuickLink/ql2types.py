@@ -16,16 +16,38 @@ QL_CALIBRATION_STATUS_NO_RIGHT_DATA = 3 # QLTypes.h: 402
 QL_CALIBRATION_STATUS_NO_DATA = 4 # QLTypes.h: 402
 QLCalibrationStatus = enum_anon_1 # QLTypes.h: 402
 
+def calibrationStatusToString(calStatus):
+    return {
+        QL_CALIBRATION_STATUS_OK: 'QL_CALIBRATION_STATUS_OK',
+        QL_CALIBRATION_STATUS_CALIBRATING: 'QL_CALIBRATION_STATUS_CALIBRATING',
+        QL_CALIBRATION_STATUS_NO_LEFT_DATA: 'QL_CALIBRATION_STATUS_NO_LEFT_DATA',
+        QL_CALIBRATION_STATUS_NO_RIGHT_DATA: 'QL_CALIBRATION_STATUS_NO_RIGHT_DATA',
+        QL_CALIBRATION_STATUS_NO_DATA: 'QL_CALIBRATION_STATUS_NO_DATA',
+    }[calStatus]
+
 enum_anon_2 = c_int # QLTypes.h: 421
 QL_CALIBRATION_TYPE_5 = 0 # QLTypes.h: 421
 QL_CALIBRATION_TYPE_9 = 1 # QLTypes.h: 421
 QL_CALIBRATION_TYPE_16 = 2 # QLTypes.h: 421
 QLCalibrationType = enum_anon_2 # QLTypes.h: 421
 
+def calibrationTypeToString(calType):
+    return {
+        QL_CALIBRATION_TYPE_5: 'QL_CALIBRATION_TYPE_5',
+        QL_CALIBRATION_TYPE_9: 'QL_CALIBRATION_TYPE_9',
+        QL_CALIBRATION_TYPE_16: 'QL_CALIBRATION_TYPE_16',
+    }[calType]
+
 enum_anon_3 = c_int # QLTypes.h: 439
 QL_DEVICE_BANDWIDTH_MODE_AUTO = 0 # QLTypes.h: 439
 QL_DEVICE_BANDWIDTH_MODE_MANUAL = 1 # QLTypes.h: 439
 QLDeviceBandwidthMode = enum_anon_3 # QLTypes.h: 439
+
+def bandwidthModeToString(bandwidthMode):
+    return {
+        QL_DEVICE_BANDWIDTH_MODE_AUTO: 'QL_DEVICE_BANDWIDTH_MODE_AUTO',
+        QL_DEVICE_BANDWIDTH_MODE_MANUAL: 'QL_DEVICE_BANDWIDTH_MODE_MANUAL',
+    }[bandwidthMode]
 
 enum_anon_4 = c_int # QLTypes.h: 463
 QL_DEVICE_EYES_TO_USE_LEFT = 0 # QLTypes.h: 463
@@ -34,10 +56,24 @@ QL_DEVICE_EYES_TO_USE_LEFT_OR_RIGHT = 2 # QLTypes.h: 463
 QL_DEVICE_EYES_TO_USE_LEFT_AND_RIGHT = 3 # QLTypes.h: 463
 QLDeviceEyesToUse = enum_anon_4 # QLTypes.h: 463
 
+def eyesToUseToString(eyes_to_use):
+    return {
+        QL_DEVICE_EYES_TO_USE_LEFT: 'QL_DEVICE_EYES_TO_USE_LEFT',
+        QL_DEVICE_EYES_TO_USE_RIGHT: 'QL_DEVICE_EYES_TO_USE_RIGHT',
+        QL_DEVICE_EYES_TO_USE_LEFT_OR_RIGHT: 'QL_DEVICE_EYES_TO_USE_LEFT_OR_RIGHT',
+        QL_DEVICE_EYES_TO_USE_LEFT_AND_RIGHT: 'QL_DEVICE_EYES_TO_USE_LEFT_AND_RIGHT',
+    }[eyes_to_use]
+
 enum_anon_5 = c_int # QLTypes.h: 480
 QL_DEVICE_GAIN_MODE_AUTO = 0 # QLTypes.h: 480
 QL_DEVICE_GAIN_MODE_MANUAL = 1 # QLTypes.h: 480
 QLDeviceGainMode = enum_anon_5 # QLTypes.h: 480
+
+def gainModeToString(gain_mode):
+    return {
+        QL_DEVICE_GAIN_MODE_AUTO: 'QL_DEVICE_GAIN_MODE_AUTO',
+        QL_DEVICE_GAIN_MODE_MANUAL: 'QL_DEVICE_GAIN_MODE_MANUAL',
+    }[gain_mode]
 
 enum_anon_6 = c_int # QLTypes.h: 537
 QL_DEVICE_GAZE_POINT_FILTER_NONE = 0 # QLTypes.h: 537
@@ -48,10 +84,26 @@ QL_DEVICE_GAZE_POINT_FILTER_HEURISTIC_TIME = 4 # QLTypes.h: 537
 QL_DEVICE_GAZE_POINT_FILTER_WEIGHTED_PREVIOUS_FRAME = 5 # QLTypes.h: 537
 QLDeviceGazePointFilterMode = enum_anon_6 # QLTypes.h: 537
 
+def gazePointFilterModeToString(filter_mode):
+    return {
+        QL_DEVICE_GAZE_POINT_FILTER_NONE: 'QL_DEVICE_GAZE_POINT_FILTER_NONE',
+        QL_DEVICE_GAZE_POINT_FILTER_MEDIAN_FRAMES: 'QL_DEVICE_GAZE_POINT_FILTER_MEDIAN_FRAMES',
+        QL_DEVICE_GAZE_POINT_FILTER_MEDIAN_TIME: 'QL_DEVICE_GAZE_POINT_FILTER_MEDIAN_TIME',
+        QL_DEVICE_GAZE_POINT_FILTER_HEURISTIC_FRAMES: 'QL_DEVICE_GAZE_POINT_FILTER_HEURISTIC_FRAMES',
+        QL_DEVICE_GAZE_POINT_FILTER_HEURISTIC_TIME: 'QL_DEVICE_GAZE_POINT_FILTER_HEURISTIC_TIME',
+        QL_DEVICE_GAZE_POINT_FILTER_WEIGHTED_PREVIOUS_FRAME: 'QL_DEVICE_GAZE_POINT_FILTER_WEIGHTED_PREVIOUS_FRAME',
+    }[filter_mode]
+
 enum_anon_7 = c_int # QLTypes.h: 554
 QL_DEVICE_IR_LIGHT_MODE_OFF = 0 # QLTypes.h: 554
 QL_DEVICE_IR_LIGHT_MODE_AUTO = 1 # QLTypes.h: 554
 QLDeviceIRLightMode = enum_anon_7 # QLTypes.h: 554
+
+def irLightModeToString(irLightMode):
+    return {
+        QL_DEVICE_IR_LIGHT_MODE_OFF: 'QL_DEVICE_IR_LIGHT_MODE_OFF',
+        QL_DEVICE_IR_LIGHT_MODE_AUTO: 'QL_DEVICE_IR_LIGHT_MODE_AUTO',
+    }[xxxxxx]
 
 enum_anon_8 = c_int # QLTypes.h: 576
 QL_DEVICE_STATUS_UNAVAILABLE = 0 # QLTypes.h: 576
@@ -59,6 +111,14 @@ QL_DEVICE_STATUS_STOPPED = 1 # QLTypes.h: 576
 QL_DEVICE_STATUS_INITIALIZED = 2 # QLTypes.h: 576
 QL_DEVICE_STATUS_STARTED = 3 # QLTypes.h: 576
 QLDeviceStatus = enum_anon_8 # QLTypes.h: 576
+
+def deviceStatusToString(device_status):
+    return {
+        QL_DEVICE_STATUS_UNAVAILABLE: 'QL_DEVICE_STATUS_UNAVAILABLE',
+        QL_DEVICE_STATUS_STOPPED: 'QL_DEVICE_STATUS_STOPPED',
+        QL_DEVICE_STATUS_INITIALIZED: 'QL_DEVICE_STATUS_INITIALIZED',
+        QL_DEVICE_STATUS_STARTED: 'QL_DEVICE_STATUS_STARTED',
+    }[device_status]
 
 enum_anon_9 = c_int # QLTypes.h: 640
 QL_ERROR_OK = 0 # QLTypes.h: 640
@@ -81,10 +141,37 @@ QL_ERROR_UNAUTHORIZED_APPLICATION_RUNNING = 16 # QLTypes.h: 640
 QL_ERROR_INVALID_DEVICE_GROUP_ID = 17 # QLTypes.h: 640
 QLError = enum_anon_9 # QLTypes.h: 640
 
+def errorToString(qlerror):
+    return {
+        QL_ERROR_INVALID_DEVICE_ID: 'QL_ERROR_INVALID_DEVICE_ID',
+        QL_ERROR_INVALID_SETTINGS_ID: 'QL_ERROR_INVALID_SETTINGS_ID',
+        QL_ERROR_INVALID_CALIBRATION_ID: 'QL_ERROR_INVALID_CALIBRATION_ID',
+        QL_ERROR_INVALID_TARGET_ID: 'QL_ERROR_INVALID_TARGET_ID',
+        QL_ERROR_INVALID_PASSWORD: 'QL_ERROR_INVALID_PASSWORD',
+        QL_ERROR_INVALID_PATH: 'QL_ERROR_INVALID_PATH',
+        QL_ERROR_INVALID_DURATION: 'QL_ERROR_INVALID_DURATION',
+        QL_ERROR_INVALID_POINTER: 'QL_ERROR_INVALID_POINTER',
+        QL_ERROR_TIMEOUT_ELAPSED: 'QL_ERROR_TIMEOUT_ELAPSED',
+        QL_ERROR_INTERNAL_ERROR: 'QL_ERROR_INTERNAL_ERROR',
+        QL_ERROR_BUFFER_TOO_SMALL: 'QL_ERROR_BUFFER_TOO_SMALL',
+        QL_ERROR_CALIBRAION_NOT_INITIALIZED: 'QL_ERROR_CALIBRAION_NOT_INITIALIZED',
+        QL_ERROR_DEVICE_NOT_STARTED: 'QL_ERROR_DEVICE_NOT_STARTED',
+        QL_ERROR_NOT_SUPPORTED: 'QL_ERROR_NOT_SUPPORTED',
+        QL_ERROR_NOT_FOUND: 'QL_ERROR_NOT_FOUND',
+        QL_ERROR_UNAUTHORIZED_APPLICATION_RUNNING: 'QL_ERROR_UNAUTHORIZED_APPLICATION_RUNNING',
+        QL_ERROR_INVALID_DEVICE_GROUP_ID: 'QL_ERROR_INVALID_DEVICE_GROUP_ID',
+    }[qlerror]
+
 enum_anon_10 = c_int # QLTypes.h: 657
 QL_EYE_TYPE_LEFT = 0 # QLTypes.h: 657
 QL_EYE_TYPE_RIGHT = 1 # QLTypes.h: 657
 QLEyeType = enum_anon_10 # QLTypes.h: 657
+
+def eyeTypeToString(eyeType):
+    return {
+        QL_EYE_TYPE_LEFT: 'QL_EYE_TYPE_LEFT',
+        QL_EYE_TYPE_RIGHT: 'QL_EYE_TYPE_RIGHT',
+    }[eyeType]
 
 enum_anon_11 = c_int # QLTypes.h: 688
 QL_INDICATOR_MODE_OFF = 0 # QLTypes.h: 688
@@ -95,10 +182,26 @@ QL_INDICATOR_MODE_LEFT_EYE_STATUS_FILTERED = 4 # QLTypes.h: 688
 QL_INDICATOR_MODE_RIGHT_EYE_STATUS_FILTERED = 5 # QLTypes.h: 688
 QLIndicatorMode = enum_anon_11 # QLTypes.h: 688
 
+def indicatorModeToString(indicator_mode):
+    return {
+        QL_INDICATOR_MODE_OFF: 'QL_INDICATOR_MODE_OFF',
+        QL_INDICATOR_MODE_ON: 'QL_INDICATOR_MODE_ON',
+        QL_INDICATOR_MODE_LEFT_EYE_STATUS: 'QL_INDICATOR_MODE_LEFT_EYE_STATUS',
+        QL_INDICATOR_MODE_RIGHT_EYE_STATUS: 'QL_INDICATOR_MODE_RIGHT_EYE_STATUS',
+        QL_INDICATOR_MODE_LEFT_EYE_STATUS_FILTERED: 'QL_INDICATOR_MODE_LEFT_EYE_STATUS_FILTERED',
+        QL_INDICATOR_MODE_RIGHT_EYE_STATUS_FILTERED: 'QL_INDICATOR_MODE_RIGHT_EYE_STATUS_FILTERED',
+    }[indicator_mode]
+
 enum_anon_12 = c_int # QLTypes.h: 705
 QL_INDICATOR_TYPE_LEFT = 0 # QLTypes.h: 705
 QL_INDICATOR_TYPE_RIGHT = 1 # QLTypes.h: 705
 QLIndicatorType = enum_anon_12 # QLTypes.h: 705
+
+def indicatorTypeToString(indicator_type):
+    return {
+        QL_INDICATOR_TYPE_LEFT: 'QL_INDICATOR_TYPE_LEFT',
+        QL_INDICATOR_TYPE_RIGHT: 'QL_INDICATOR_TYPE_RIGHT',
+    }[indicator_type]
 
 enum_anon_13 = c_int # QLTypes.h: 761
 QL_SETTING_TYPE_INT = 0 # QLTypes.h: 761
@@ -117,6 +220,25 @@ QL_SETTING_TYPE_BOOL = 12 # QLTypes.h: 761
 QL_SETTING_TYPE_STRING = 13 # QLTypes.h: 761
 QL_SETTING_TYPE_VOID_POINTER = 14 # QLTypes.h: 761
 QLSettingType = enum_anon_13 # QLTypes.h: 761
+
+def settingTypeToString(setting_type):
+    return {
+        QL_SETTING_TYPE_INT: 'QL_SETTING_TYPE_INT',
+        QL_SETTING_TYPE_INT8: 'QL_SETTING_TYPE_INT8',
+        QL_SETTING_TYPE_INT16: 'QL_SETTING_TYPE_INT16',
+        QL_SETTING_TYPE_INT32: 'QL_SETTING_TYPE_INT32',
+        QL_SETTING_TYPE_INT64: 'QL_SETTING_TYPE_INT64',
+        QL_SETTING_TYPE_UINT: 'QL_SETTING_TYPE_UINT',
+        QL_SETTING_TYPE_UINT8: 'QL_SETTING_TYPE_UINT8',
+        QL_SETTING_TYPE_UINT16: 'QL_SETTING_TYPE_UINT16',
+        QL_SETTING_TYPE_UINT32: 'QL_SETTING_TYPE_UINT32',
+        QL_SETTING_TYPE_UINT64: 'QL_SETTING_TYPE_UINT64',
+        QL_SETTING_TYPE_FLOAT: 'QL_SETTING_TYPE_FLOAT',
+        QL_SETTING_TYPE_DOUBLE: 'QL_SETTING_TYPE_DOUBLE',
+        QL_SETTING_TYPE_BOOL: 'QL_SETTING_TYPE_BOOL',
+        QL_SETTING_TYPE_STRING: 'QL_SETTING_TYPE_STRING',
+        QL_SETTING_TYPE_VOID_POINTER: 'QL_SETTING_TYPE_VOID_POINTER',
+    }[setting_type]
 
 # QLTypes.h: 788
 class struct_anon_14(Structure):
@@ -168,8 +290,12 @@ struct_anon_16._fields_ = [
     ('serialNumber', c_char * 128),
     ('modelName', c_char * 128),
 ]
-
 QLDeviceInfo = struct_anon_16 # QLTypes.h: 834
+
+def infoToString(info):
+    return "Model:\t" + info.modelName.decode("utf-8") \
+        + "\nSN:\t" + info.serialNumber.decode("utf-8") \
+        +"\nSensor:\t" + str(info.sensorWidth) + "x" + str(info.sensorHeight)
 
 # QLTypes.h: 845
 class struct_anon_17(Structure):
@@ -273,6 +399,9 @@ struct_anon_21._fields_ = [
 ]
 
 QLEyeData = struct_anon_21 # QLTypes.h: 959
+
+def eyeDataToString(eye_data):
+    return str(eye_data.Pupil.x) + "," + str(eye_data.Pupil.x)
 
 # QLTypes.h: 988
 class struct_anon_22(Structure):
