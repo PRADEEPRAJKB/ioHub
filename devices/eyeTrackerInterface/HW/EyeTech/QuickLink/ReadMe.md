@@ -23,6 +23,14 @@ To install python 2.7 with chocolatey, enter this:
 
 Then after it has downloaded, go to: `C:\Python27` and rename `python.exe` to `python27.exe`.
 
+Running the Example
+---
+Plug in an eye tracker, make sure it is working with Quick Glance...
+Close Quick Glance and run:
+
+    python quicklink2.py
+
+
 Troubleshooting
 ----
     OSError: [WinError 126] The specified module could not be found
