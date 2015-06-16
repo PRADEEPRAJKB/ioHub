@@ -30,6 +30,36 @@ Close Quick Glance and run:
 
     python quicklink2.py
 
+###Example Output
+
+	QL2 API Version:  2.7.3.1
+	num of devices found: 1
+	Device id: 1
+	Model:	EyeOn
+	SN:	4806
+	Sensor:	2592x1944
+	starting device
+	
+	ImageData:	 PixelData:	<__main__.LP_c_ubyte object at 0x00000000069E9B48>
+	 Size:	2592x1944
+	 Timestamp:	1295773750.40
+	 Gain:	37
+	 FrameNumber:	416
+	 ROI:	680,208 1296x576
+	 Reserved:	<__main__.c_void_p_Array_14 object at 0x00000000069E9B48>
+	LeftEye:	True 1724.15,475.75
+	RightEye:	True 842.66,447.60
+	GazePoint:	 Valid:	False
+	 x:	0.0
+	 y:	0.0
+	Focus:	13.44
+	Distance:	42.66
+	Bandwidth:	63
+	DeviceId:	1
+	
+	...
+	
+	done
 
 Troubleshooting
 ----

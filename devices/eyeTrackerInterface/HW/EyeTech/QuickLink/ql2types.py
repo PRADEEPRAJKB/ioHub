@@ -1,5 +1,9 @@
-
+# https://www.cs.unc.edu/~gb/blog/2007/02/11/ctypes-tricks/
+# http://starship.python.net/crew/theller/ctypes/tutorial.html
 from ctypes import *
+
+def is_64bit():
+    return sizeof(c_voidp) == 8
 
 QLDeviceId = c_int # QLTypes.h: 316
 QLDeviceGroupId = c_int # QLTypes.h: 327
@@ -242,7 +246,12 @@ def settingTypeToString(setting_type):
 
 # QLTypes.h: 788
 class struct_anon_14(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
 
 struct_anon_14.__slots__ = [
     'targetId',
@@ -259,7 +268,12 @@ QLCalibrationTarget = struct_anon_14 # QLTypes.h: 788
 
 # QLTypes.h: 812
 class struct_anon_15(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
 
 struct_anon_15.__slots__ = [
     'x',
@@ -276,7 +290,12 @@ QLCalibrationScore = struct_anon_15 # QLTypes.h: 812
 
 # QLTypes.h: 834
 class struct_anon_16(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
 
 struct_anon_16.__slots__ = [
     'sensorWidth',
@@ -299,7 +318,12 @@ def infoToString(info):
 
 # QLTypes.h: 845
 class struct_anon_17(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
 
 struct_anon_17.__slots__ = [
     'x',
@@ -314,7 +338,12 @@ QLXYPairDouble = struct_anon_17 # QLTypes.h: 845
 
 # QLTypes.h: 856
 class struct_anon_18(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
 
 struct_anon_18.__slots__ = [
     'x',
@@ -329,7 +358,12 @@ QLXYPairFloat = struct_anon_18 # QLTypes.h: 856
 
 # QLTypes.h: 876
 class struct_anon_19(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
 
 struct_anon_19.__slots__ = [
     'x',
@@ -346,9 +380,19 @@ struct_anon_19._fields_ = [
 
 QLRectInt = struct_anon_19 # QLTypes.h: 876
 
+def rectToString(rect):
+    return str(rect.x) + ',' + str(rect.y) + ' ' \
+        + str(rect.width) + 'x' + str(rect.height)
+
 # QLTypes.h: 920
 class struct_anon_20(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
+
 
 struct_anon_20.__slots__ = [
     'PixelData',
@@ -360,22 +404,52 @@ struct_anon_20.__slots__ = [
     'ROI',
     'Reserved',
 ]
-struct_anon_20._fields_ = [
-    ('PixelData', POINTER(c_ubyte)),
-    ('Width', c_int),
-    ('Height', c_int),
-    ('Timestamp', c_double),
-    ('Gain', c_int),
-    ('FrameNumber', c_long),
-    ('ROI', QLRectInt),
-    ('Reserved', POINTER(None) * 12),
-]
+
+if(is_64bit()):
+    struct_anon_20._fields_ = [
+        ('PixelData', POINTER(c_ubyte)),
+        ('Width', c_int),
+        ('Height', c_int),
+        ('Timestamp', c_double),
+        ('Gain', c_int),
+        ('FrameNumber', c_long),
+        ('ROI', QLRectInt),
+        #('Reserved', POINTER(None) * 12),#32 bit version # POINTER(None) = 4 bytes, 32 bits
+        ('Reserved', POINTER(None) * 14),#64 bit version # POINTER(None) = 8 bytes, 64 bits
+    ]
+else:
+    struct_anon_20._fields_ = [
+        ('PixelData', POINTER(c_ubyte)),
+        ('Width', c_int),
+        ('Height', c_int),
+        ('Timestamp', c_double),
+        ('Gain', c_int),
+        ('FrameNumber', c_long),
+        ('ROI', QLRectInt),
+        ('Reserved', POINTER(None) * 12),#32 bit version # POINTER(None) = 4 bytes, 32 bits
+        #('Reserved', POINTER(None) * 14),#64 bit version # POINTER(None) = 8 bytes, 64 bits
+    ]
 
 QLImageData = struct_anon_20 # QLTypes.h: 920
 
+def imageDataToString(img_data):
+    return ' PixelData:\t' + str(img_data.PixelData) \
+        + '\n Size:\t' + str(img_data.Width) + 'x' + str(img_data.Height) \
+        + '\n Timestamp:\t' + "{0:.2f}".format(img_data.Timestamp) \
+        + '\n Gain:\t' + str(img_data.Gain) \
+        + '\n FrameNumber:\t' + str(img_data.FrameNumber) \
+        + '\n ROI:\t' + rectToString(img_data.ROI)
+        #+ '\n Reserved:\t' + str(img_data.Reserved)#img_data.Reserved.decode("utf-8")
+        
+
 # QLTypes.h: 959
 class struct_anon_21(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
 
 struct_anon_21.__slots__ = [
     'Found',
@@ -401,11 +475,18 @@ struct_anon_21._fields_ = [
 QLEyeData = struct_anon_21 # QLTypes.h: 959
 
 def eyeDataToString(eye_data):
-    return str(eye_data.Pupil.x) + "," + str(eye_data.Pupil.x)
+    return str(eye_data.Found) + " " \
+        + "{0:.2f}".format(eye_data.Pupil.x) + "," \
+        + "{0:.2f}".format(eye_data.Pupil.y)
 
 # QLTypes.h: 988
 class struct_anon_22(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + ','.join(res) + ')'
 
 struct_anon_22.__slots__ = [
     'Valid',
@@ -426,9 +507,19 @@ struct_anon_22._fields_ = [
 
 QLWeightedGazePoint = struct_anon_22 # QLTypes.h: 988
 
+def weightedGazePointToString(wgp):
+    return ' Valid:\t' + str(wgp.Valid) \
+        + '\n x:\t' + str(wgp.x) \
+        + '\n y:\t' + str(wgp.y)
+
 # QLTypes.h: 1033
 class struct_anon_23(Structure):
-    pass
+    def __repr__(self):
+        '''Print the fields'''
+        res = []
+        for field in self._fields_:
+            res.append('%s=%s' % (field[0], repr(getattr(self, field[0]))))
+        return self.__class__.__name__ + '(' + '\n'.join(res) + ')'
 
 struct_anon_23.__slots__ = [
     'ImageData',
@@ -442,7 +533,7 @@ struct_anon_23.__slots__ = [
     'Reserved',
 ]
 struct_anon_23._fields_ = [
-    ('ImageData', QLImageData),
+    ('ImageData', QLImageData), # works
     ('LeftEye', QLEyeData),
     ('RightEye', QLEyeData),
     ('WeightedGazePoint', QLWeightedGazePoint),
@@ -454,6 +545,17 @@ struct_anon_23._fields_ = [
 ]
 
 QLFrameData = struct_anon_23 # QLTypes.h: 1033
+
+def frameDataToString(frame):
+    return 'ImageData:\t' + imageDataToString(frame.ImageData) \
+        + '\nLeftEye:\t' + eyeDataToString(frame.LeftEye) \
+        + '\nRightEye:\t' + eyeDataToString(frame.RightEye) \
+        + '\nGazePoint:\t' + weightedGazePointToString(frame.WeightedGazePoint) \
+        + '\nFocus:\t' + "{0:.2f}".format(frame.Focus) \
+        + '\nDistance:\t' + "{0:.2f}".format(frame.Distance) \
+        + '\nBandwidth:\t' + str(frame.Bandwidth) \
+        + '\nDeviceId:\t' + str(frame.DeviceId)
+        
 
 __const = c_int # <command-line>: 5
 
@@ -615,3 +717,6 @@ except:
 
 # No inserted files
 
+if __name__ == "__main__":
+    from quicklink2 import main
+    main()

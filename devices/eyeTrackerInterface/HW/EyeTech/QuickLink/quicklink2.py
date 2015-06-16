@@ -13,7 +13,7 @@ import time
 
 #import inspect
 
-if __name__ == "__main__":
+def main():
     # If this file is ran explicitly, do a test of the functions here.
     # load the dll!
     ql2 = CDLL("QuickLink2.dll")
@@ -25,13 +25,14 @@ if __name__ == "__main__":
     version_str = create_string_buffer(buff_size)    
     ret_val = ql2.QLAPI_GetVersion(c_int(buff_size), version_str)
     if(ret_val != QL_ERROR_OK):
-        raise ValueError('API error')
+        raise ValueError(errorToString(ret_val))
     else:
-        print("QL2 API Version: ", version_str.value)
+        print("QL2 API Version: ", version_str.value.decode("utf-8"))
     
-    print(ql2.QLAPI_ExportSettings)
-    print(ql2.QLAPI_ImportSettings)
-    print(ql2.QLDevice_Enumerate)
+    if(False):
+        print(ql2.QLAPI_ExportSettings)
+        print(ql2.QLAPI_ImportSettings)
+        print(ql2.QLDevice_Enumerate)
     
     device_id = 0
     
@@ -43,7 +44,7 @@ if __name__ == "__main__":
     device_buffer_ptr = pointer(device_buffer)
     ret_val = ql2.QLDevice_Enumerate(num_devices_ptr, device_buffer_ptr)
     if(ret_val != QL_ERROR_OK):
-        print("not okay!")
+        raise ValueError(errorToString(ret_val))
     else:
         print("num of devices found:", num_devices.value)
         for num in range(0, num_devices.value):
@@ -64,19 +65,23 @@ if __name__ == "__main__":
         print(infoToString(device_info))
     
     
-    print(ql2.QLDevice_ExportSettings)
-    print(ql2.QLDevice_ImportSettings)
-    print(ql2.QLDevice_IsSettingSupported)
-    print(ql2.QLDevice_SetPassword)
+    if(False):
+        print(ql2.QLDevice_ExportSettings)
+        print(ql2.QLDevice_ImportSettings)
+        print(ql2.QLDevice_IsSettingSupported)
+        print(ql2.QLDevice_SetPassword)
     
     #QLDevice_Start
     print("starting device")
-    ql2.QLDevice_Start(device_id)
+    ret_val = ql2.QLDevice_Start(device_id)
+    if(ret_val != QL_ERROR_OK):
+        raise ValueError(errorToString(ret_val))
     
-    print(ql2.QLDevice_Stop)
-    print(ql2.QLDevice_Stop_All)
-    print(ql2.QLDevice_SetIndicator)
-    print(ql2.QLDevice_GetIndicator)
+    if(False):
+        print(ql2.QLDevice_Stop)
+        print(ql2.QLDevice_Stop_All)
+        print(ql2.QLDevice_SetIndicator)
+        print(ql2.QLDevice_GetIndicator)
     
     
     frame = (QLFrameData)()
@@ -91,47 +96,49 @@ if __name__ == "__main__":
         if(ret_val != QL_ERROR_OK):
             raise ValueError(errorToString(ret_val))
         else:
-            print("got frame!", frame.ImageData.FrameNumber)
-            
-            # Not working after this point.  Need to debug structures            
-            if(frame.LeftEye.Found == c_bool(True)):
-                print("LE",eyeDataToString(frame.LeftEye))
-            if(frame.RightEye.Found == c_bool(True)):
-                print("RE",eyeDataToString(frame.RightEye))
+            if(False):
+                print(frame)
+            else:
+                print(frameDataToString(frame))
     
+    ret_val = ql2.QLDevice_Stop(device_id)
+    if(ret_val != QL_ERROR_OK):
+        raise ValueError(errorToString(ret_val))
     
-    print(ql2.QLDevice_ApplyCalibration)
-    print(ql2.QLDevice_CalibrateEyeRadius)
-    print(ql2.QLDeviceGroup_Create)
-    print(ql2.QLDeviceGroup_AddDevice)
-    print(ql2.QLDeviceGroup_RemoveDevice)
-    print(ql2.QLDeviceGroup_Enumerate)
-    print(ql2.QLDeviceGroup_GetFrame)
-    print(ql2.QLSettings_Load)
-    print(ql2.QLSettings_Save)
-    print(ql2.QLSettings_Create)
-    print(ql2.QLSettings_AddSetting)
-    print(ql2.QLSettings_RemoveSetting)
-    print(ql2.QLSettings_SetValue)
-    print(ql2.QLSettings_SetValueInt)
-    print(ql2.QLSettings_SetValueDouble)
-    print(ql2.QLSettings_SetValueString)
-    print(ql2.QLSettings_GetValue)
-    print(ql2.QLSettings_GetValueInt)
-    print(ql2.QLSettings_GetValueDouble)
-    print(ql2.QLSettings_GetValueString)
-    print(ql2.QLCalibration_Load)
-    print(ql2.QLCalibration_Save)
-    print(ql2.QLCalibration_Create)
-    print(ql2.QLCalibration_Initialize)
-    print(ql2.QLCalibration_GetTargets)
-    print(ql2.QLCalibration_Calibrate)
-    print(ql2.QLCalibration_GetScoring)
-    print(ql2.QLCalibration_GetStatus)
-    print(ql2.QLCalibration_Finalize)
-    print(ql2.QLCalibration_Cancel)
-    print(ql2.QLCalibration_AddBias)
-    
-    
+    if(False):
+        print(ql2.QLDevice_ApplyCalibration)
+        print(ql2.QLDevice_CalibrateEyeRadius)
+        print(ql2.QLDeviceGroup_Create)
+        print(ql2.QLDeviceGroup_AddDevice)
+        print(ql2.QLDeviceGroup_RemoveDevice)
+        print(ql2.QLDeviceGroup_Enumerate)
+        print(ql2.QLDeviceGroup_GetFrame)
+        print(ql2.QLSettings_Load)
+        print(ql2.QLSettings_Save)
+        print(ql2.QLSettings_Create)
+        print(ql2.QLSettings_AddSetting)
+        print(ql2.QLSettings_RemoveSetting)
+        print(ql2.QLSettings_SetValue)
+        print(ql2.QLSettings_SetValueInt)
+        print(ql2.QLSettings_SetValueDouble)
+        print(ql2.QLSettings_SetValueString)
+        print(ql2.QLSettings_GetValue)
+        print(ql2.QLSettings_GetValueInt)
+        print(ql2.QLSettings_GetValueDouble)
+        print(ql2.QLSettings_GetValueString)
+        print(ql2.QLCalibration_Load)
+        print(ql2.QLCalibration_Save)
+        print(ql2.QLCalibration_Create)
+        print(ql2.QLCalibration_Initialize)
+        print(ql2.QLCalibration_GetTargets)
+        print(ql2.QLCalibration_Calibrate)
+        print(ql2.QLCalibration_GetScoring)
+        print(ql2.QLCalibration_GetStatus)
+        print(ql2.QLCalibration_Finalize)
+        print(ql2.QLCalibration_Cancel)
+        print(ql2.QLCalibration_AddBias)
     
     print("done")
+
+if __name__ == "__main__":
+    main()
