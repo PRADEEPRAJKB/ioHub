@@ -11,9 +11,21 @@ from ctypes import *
 from ql2types import  * 
 import time
 
+import matplotlib.pyplot as plt
+import numpy as np
+# http://docs.scipy.org/doc/numpy/reference/routines.ctypeslib.html
+
 #import inspect
 
 def main():
+    
+    ## matplotlib test
+    #from scipy import misc
+    #l = misc.lena()
+    #plt.imshow(l, cmap=plt.cm.gray)
+    #plt.show()
+    #plt.draw()
+    
     # If this file is ran explicitly, do a test of the functions here.
     # load the dll!
     ql2 = CDLL("QuickLink2.dll")
@@ -89,6 +101,7 @@ def main():
     wait_time = 500
     
     # run the eye tracker for 30 seconds
+    show_img = True    
     duration_seconds = 30
     stop = time.time() + duration_seconds
     while time.time() < stop:
@@ -100,6 +113,14 @@ def main():
                 print(frame)
             else:
                 print(frameDataToString(frame))
+            
+            if(show_img):
+                live_view = np.ctypeslib.as_array(frame.ImageData.PixelData, \
+                    shape=(frame.ImageData.Height, frame.ImageData.Width))
+                live_view.dtype = np.uint8
+                plt.imshow(live_view, cmap=plt.cm.gray)
+                plt.draw()
+                plt.show()
     
     ret_val = ql2.QLDevice_Stop(device_id)
     if(ret_val != QL_ERROR_OK):
