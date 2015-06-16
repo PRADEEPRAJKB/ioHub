@@ -23,6 +23,14 @@ To install python 2.7 with chocolatey, enter this:
 
 Then after it has downloaded, go to: `C:\Python27` and rename `python.exe` to `python27.exe`.
 
+Issues
+
+-----
+
+ - `show_img` slows the loop down quite a bit.  Turning that off gets the full speed of the eye tracker again.
+ - Settings example
+ - Calibration example
+
 Running the Example
 ---
 Plug in an eye tracker, make sure it is working with Quick Glance...
